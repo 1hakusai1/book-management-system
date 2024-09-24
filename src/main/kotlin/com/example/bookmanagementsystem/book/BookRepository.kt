@@ -8,6 +8,41 @@ import java.util.*
 
 @Repository
 class BookRepository(val dslContext: DSLContext) {
+    fun findById(id: String): Book? {
+        val books = dslContext
+            .select(BOOKS.ID, BOOKS.TITLE, AUTHORS_BOOKS.AUTHOR_ID)
+            .from(BOOKS)
+            .join(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID).and(BOOKS.ID.eq(UUID.fromString(id))))
+            .fetch()
+            .groupBy { it.getValue(BOOKS.ID) }
+            .map {
+                Book(
+                    id = it.key.toString(),
+                    title = it.value.first().getValue(BOOKS.TITLE),
+                    authorIds = it.value.map { record ->
+                        record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
+                    })
+            }
+        return if (books.isEmpty()) null else books.first()
+    }
+
+    fun list(): List<Book> {
+        return dslContext
+            .select(BOOKS.ID, BOOKS.TITLE, AUTHORS_BOOKS.AUTHOR_ID)
+            .from(BOOKS)
+            .join(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID))
+            .fetch()
+            .groupBy { it.getValue(BOOKS.ID) }
+            .map {
+                Book(
+                    id = it.key.toString(),
+                    title = it.value.first().getValue(BOOKS.TITLE),
+                    authorIds = it.value.map { record ->
+                        record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
+                    })
+            }
+    }
+
     fun save(book: Book) {
         dslContext.transaction { c ->
             c.dsl().newRecord(BOOKS).also {
