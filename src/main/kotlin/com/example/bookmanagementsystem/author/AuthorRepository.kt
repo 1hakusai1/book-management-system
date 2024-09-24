@@ -32,10 +32,12 @@ class AuthorRepository(val dslContext: DSLContext) {
     )
 
     fun save(author: Author) {
-        dslContext.newRecord(AUTHORS).also {
-            it.id = UUID.fromString(author.id)
-            it.name = author.name
-            it.store()
-        }
+        dslContext
+            .insertInto(AUTHORS, AUTHORS.ID, AUTHORS.NAME)
+            .values(UUID.fromString(author.id), author.name)
+            .onDuplicateKeyUpdate()
+            .set(AUTHORS.NAME, author.name)
+            .execute()
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.bookmanagementsystem.book
 import com.example.bookmanagementsystem.jooq.public_.tables.AuthorsBooks.AUTHORS_BOOKS
 import com.example.bookmanagementsystem.jooq.public_.tables.Books.BOOKS
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -63,18 +64,20 @@ class BookRepository(val dslContext: DSLContext) {
 
     fun save(book: Book) {
         dslContext.transaction { c ->
-            c.dsl().newRecord(BOOKS).also {
-                it.id = UUID.fromString(book.id)
-                it.title = book.title
-                it.store()
-            }
-            book.authorIds.forEach { authorId ->
-                c.dsl().newRecord(AUTHORS_BOOKS).also {
-                    it.bookId = UUID.fromString(book.id)
-                    it.authorId = UUID.fromString(authorId)
-                    it.store()
-                }
-            }
+            c.dsl()
+                .insertInto(BOOKS, BOOKS.ID, BOOKS.TITLE)
+                .values(UUID.fromString(book.id), book.title)
+                .onDuplicateKeyUpdate()
+                .set(BOOKS.TITLE, book.title)
+                .execute()
+            c.dsl()
+                .deleteFrom(AUTHORS_BOOKS)
+                .where(AUTHORS_BOOKS.BOOK_ID.eq(UUID.fromString(book.id)))
+                .execute()
+            c.dsl()
+                .insertInto(AUTHORS_BOOKS, AUTHORS_BOOKS.AUTHOR_ID, AUTHORS_BOOKS.BOOK_ID)
+                .valuesOfRows(book.authorIds.map { DSL.row(UUID.fromString(it), UUID.fromString(book.id)) })
+                .execute()
         }
     }
 }

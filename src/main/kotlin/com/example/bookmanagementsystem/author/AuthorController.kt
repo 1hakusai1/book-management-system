@@ -22,6 +22,14 @@ class AuthorController(val repository: AuthorRepository) {
         }
     }
 
+    @PutMapping("/{id}")
+    fun updateAuthor(@PathVariable("id") id: String, @RequestBody req: UpdateAuthorRequest): ResponseEntity<Author?> {
+        val current = repository.findById(id) ?: return ResponseEntity(null, HttpStatus.BAD_REQUEST)
+        val updated = Author(current.id, req.name)
+        repository.save(updated)
+        return ResponseEntity(updated, HttpStatus.OK)
+    }
+
     @PostMapping("")
     fun createNewAuthor(@RequestBody req: CreateAuthorRequest): Author {
         val newAuthor = Author.from(req.name)
