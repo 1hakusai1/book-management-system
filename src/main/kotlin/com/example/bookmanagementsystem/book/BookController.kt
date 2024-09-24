@@ -16,8 +16,8 @@ class BookController(val bookRepository: BookRepository) {
     }
 
     @GetMapping("")
-    fun list(): List<Book> {
-        return bookRepository.list()
+    fun list(@RequestParam authorId: String?): List<Book> {
+        return if (authorId == null) bookRepository.list() else bookRepository.findByAuthorId(authorId)
     }
 
     @PostMapping("")
