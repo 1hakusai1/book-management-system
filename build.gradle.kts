@@ -57,7 +57,7 @@ jooq {
         generator {
             database {
                 name = "org.jooq.meta.postgres.PostgresDatabase"
-                includes = "authors"
+                includes = "authors|books|authors_books"
             }
             generate {}
             target {

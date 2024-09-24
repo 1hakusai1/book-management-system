@@ -6,6 +6,8 @@ package com.example.bookmanagementsystem.jooq.public_;
 
 import com.example.bookmanagementsystem.jooq.DefaultCatalog;
 import com.example.bookmanagementsystem.jooq.public_.tables.Authors;
+import com.example.bookmanagementsystem.jooq.public_.tables.AuthorsBooks;
+import com.example.bookmanagementsystem.jooq.public_.tables.Books;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,16 @@ public class Public extends SchemaImpl {
     public final Authors AUTHORS = Authors.AUTHORS;
 
     /**
+     * The table <code>public.authors_books</code>.
+     */
+    public final AuthorsBooks AUTHORS_BOOKS = AuthorsBooks.AUTHORS_BOOKS;
+
+    /**
+     * The table <code>public.books</code>.
+     */
+    public final Books BOOKS = Books.BOOKS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -49,7 +61,9 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            Authors.AUTHORS
+            Authors.AUTHORS,
+            AuthorsBooks.AUTHORS_BOOKS,
+            Books.BOOKS
         );
     }
 }
