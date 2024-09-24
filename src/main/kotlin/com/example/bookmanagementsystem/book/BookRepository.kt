@@ -13,16 +13,19 @@ class BookRepository(val dslContext: DSLContext) {
         val books = dslContext
             .select(BOOKS.ID, BOOKS.TITLE, AUTHORS_BOOKS.AUTHOR_ID)
             .from(BOOKS)
-            .join(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID).and(BOOKS.ID.eq(UUID.fromString(id))))
+            .leftOuterJoin(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID))
+            .where(BOOKS.ID.eq(UUID.fromString(id)))
             .fetch()
             .groupBy { it.getValue(BOOKS.ID) }
             .map {
                 Book(
                     id = it.key.toString(),
                     title = it.value.first().getValue(BOOKS.TITLE),
-                    authorIds = it.value.map { record ->
-                        record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
-                    })
+                    authorIds = it.value
+                        .filter { record -> record.getValue(AUTHORS_BOOKS.AUTHOR_ID) != null }
+                        .map { record ->
+                            record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
+                        })
             }
         return if (books.isEmpty()) null else books.first()
     }
@@ -31,17 +34,19 @@ class BookRepository(val dslContext: DSLContext) {
         return dslContext
             .select(BOOKS.ID, BOOKS.TITLE, AUTHORS_BOOKS.AUTHOR_ID)
             .from(BOOKS)
-            .join(AUTHORS_BOOKS)
-            .on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID).and(AUTHORS_BOOKS.AUTHOR_ID.eq(UUID.fromString(authorId))))
+            .leftOuterJoin(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID))
+            .where(AUTHORS_BOOKS.AUTHOR_ID.eq(UUID.fromString(authorId)))
             .fetch()
             .groupBy { it.getValue(BOOKS.ID) }
             .map {
                 Book(
                     id = it.key.toString(),
                     title = it.value.first().getValue(BOOKS.TITLE),
-                    authorIds = it.value.map { record ->
-                        record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
-                    })
+                    authorIds = it.value
+                        .filter { record -> record.getValue(AUTHORS_BOOKS.AUTHOR_ID) != null }
+                        .map { record ->
+                            record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
+                        })
             }
     }
 
@@ -49,16 +54,18 @@ class BookRepository(val dslContext: DSLContext) {
         return dslContext
             .select(BOOKS.ID, BOOKS.TITLE, AUTHORS_BOOKS.AUTHOR_ID)
             .from(BOOKS)
-            .join(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID))
+            .leftOuterJoin(AUTHORS_BOOKS).on(BOOKS.ID.eq(AUTHORS_BOOKS.BOOK_ID))
             .fetch()
             .groupBy { it.getValue(BOOKS.ID) }
             .map {
                 Book(
                     id = it.key.toString(),
                     title = it.value.first().getValue(BOOKS.TITLE),
-                    authorIds = it.value.map { record ->
-                        record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
-                    })
+                    authorIds = it.value
+                        .filter { record -> record.getValue(AUTHORS_BOOKS.AUTHOR_ID) != null }
+                        .map { record ->
+                            record.getValue(AUTHORS_BOOKS.AUTHOR_ID).toString()
+                        })
             }
     }
 
