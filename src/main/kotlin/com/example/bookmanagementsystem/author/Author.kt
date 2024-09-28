@@ -11,10 +11,14 @@ class Author(val id: String, val name: String, val birthday: LocalDate?) {
             throw ValidationException("著者の誕生日が現在の日付以降になっています。id: $id, birthday: $birthday, today: $today")
     }
 
+    fun update(newName: String, newBirthday: LocalDate?): Result<Author> {
+        return kotlin.runCatching { Author(id, newName, newBirthday) }
+    }
+
     companion object {
-        fun from(name: String, birthday: LocalDate?): Author {
+        fun from(name: String, birthday: LocalDate?): Result<Author> {
             val id = Generators.timeBasedGenerator().generate().toString()
-            return Author(id, name, birthday)
+            return kotlin.runCatching { Author(id, name, birthday) }
         }
     }
 }
