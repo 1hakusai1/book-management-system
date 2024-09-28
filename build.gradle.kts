@@ -43,7 +43,24 @@ kotlin {
     }
 }
 
-tasks.withType<Test> {
+val test by testing.suites.existing(JvmTestSuite::class)
+tasks.named<Test>("test") {
+    useJUnitPlatform {
+        excludeTags("integration")
+    }
+}
+
+tasks.register<Test>("testIntegration") {
+    testClassesDirs = files(test.map { it.sources.output.classesDirs })
+    classpath = files(test.map { it.sources.runtimeClasspath })
+    useJUnitPlatform {
+        includeTags("integration")
+    }
+}
+
+tasks.register<Test>("testAll") {
+    testClassesDirs = files(test.map { it.sources.output.classesDirs })
+    classpath = files(test.map { it.sources.runtimeClasspath })
     useJUnitPlatform()
 }
 
