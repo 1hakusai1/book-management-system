@@ -14,16 +14,16 @@ docker compose up -d
 
 ## テスト
 
-### 単体テスト
+### Smallテスト
 
 ```shell
 ./gradlew test
 ```
 
-### 結合テスト
+### Mediumテスト
 
 テスト用のDBコンテナが別途立ち上がってDBを通してテストを行う
 
 ```shell
-./gradlew testIntegration
+./gradlew testMedium
 ```

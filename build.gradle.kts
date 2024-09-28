@@ -46,15 +46,15 @@ kotlin {
 val test by testing.suites.existing(JvmTestSuite::class)
 tasks.named<Test>("test") {
     useJUnitPlatform {
-        excludeTags("integration")
+        excludeTags("medium")
     }
 }
 
-tasks.register<Test>("testIntegration") {
+tasks.register<Test>("testMedium") {
     testClassesDirs = files(test.map { it.sources.output.classesDirs })
     classpath = files(test.map { it.sources.runtimeClasspath })
     useJUnitPlatform {
-        includeTags("integration")
+        includeTags("medium")
     }
 }
 

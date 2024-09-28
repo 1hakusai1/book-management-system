@@ -15,7 +15,7 @@ typealias ResponseBody = Map<String, Any>
     properties = ["spring.datasource.url=jdbc:postgresql://localhost:5555/dev", "server.port=8081", "spring.flyway.clean-disabled=false"],
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
-@Tag("integration")
+@Tag("medium")
 class BookManagementSystemApplicationTests(@Autowired val flyway: Flyway) {
 
     lateinit var client: RestClient
