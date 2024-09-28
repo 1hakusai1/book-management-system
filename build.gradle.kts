@@ -34,6 +34,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("org.testcontainers:postgresql:1.20.1")
 }
 
 kotlin {
