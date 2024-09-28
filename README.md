@@ -12,6 +12,8 @@ docker compose up -d
 ./gradlew bootRun
 ```
 
+[リクエストとレスポンスのサンプル](./docs/request-sample.md)
+
 ## テスト
 
 ### Smallテスト
