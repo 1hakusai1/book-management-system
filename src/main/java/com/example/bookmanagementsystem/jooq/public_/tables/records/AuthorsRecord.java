@@ -6,6 +6,7 @@ package com.example.bookmanagementsystem.jooq.public_.tables.records;
 
 import com.example.bookmanagementsystem.jooq.public_.tables.Authors;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.jooq.Record1;
@@ -48,6 +49,20 @@ public class AuthorsRecord extends UpdatableRecordImpl<AuthorsRecord> {
         return (String) get(1);
     }
 
+    /**
+     * Setter for <code>public.authors.birthday</code>.
+     */
+    public void setBirthday(LocalDate value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.authors.birthday</code>.
+     */
+    public LocalDate getBirthday() {
+        return (LocalDate) get(2);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -71,11 +86,12 @@ public class AuthorsRecord extends UpdatableRecordImpl<AuthorsRecord> {
     /**
      * Create a detached, initialised AuthorsRecord
      */
-    public AuthorsRecord(UUID id, String name) {
+    public AuthorsRecord(UUID id, String name, LocalDate birthday) {
         super(Authors.AUTHORS);
 
         setId(id);
         setName(name);
+        setBirthday(birthday);
         resetChangedOnNotNull();
     }
 }

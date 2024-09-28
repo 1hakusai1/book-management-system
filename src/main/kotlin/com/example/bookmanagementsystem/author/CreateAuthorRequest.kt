@@ -1,3 +1,5 @@
 package com.example.bookmanagementsystem.author
 
-data class CreateAuthorRequest(val name: String)
+import java.time.LocalDate
+
+data class CreateAuthorRequest(val name: String, val birthday: LocalDate?)

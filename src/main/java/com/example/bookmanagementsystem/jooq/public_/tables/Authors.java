@@ -10,6 +10,7 @@ import com.example.bookmanagementsystem.jooq.public_.tables.AuthorsBooks.Authors
 import com.example.bookmanagementsystem.jooq.public_.tables.Books.BooksPath;
 import com.example.bookmanagementsystem.jooq.public_.tables.records.AuthorsRecord;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -65,6 +66,11 @@ public class Authors extends TableImpl<AuthorsRecord> {
      * The column <code>public.authors.name</code>.
      */
     public final TableField<AuthorsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.authors.birthday</code>.
+     */
+    public final TableField<AuthorsRecord, LocalDate> BIRTHDAY = createField(DSL.name("birthday"), SQLDataType.LOCALDATE, this, "");
 
     private Authors(Name alias, Table<AuthorsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
