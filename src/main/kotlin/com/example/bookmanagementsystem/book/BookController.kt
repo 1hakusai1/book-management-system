@@ -30,7 +30,7 @@ class BookController(val bookRepository: BookRepository) {
 
     @PostMapping("")
     fun createNewBook(@RequestBody req: CreateBookRequest): Book {
-        val newBook = Book.from(req.title, req.authorIds)
+        val newBook = Book.from(req.title, req.price, req.publicationStatus, req.authorIds)
         bookRepository.save(newBook)
         return newBook
     }

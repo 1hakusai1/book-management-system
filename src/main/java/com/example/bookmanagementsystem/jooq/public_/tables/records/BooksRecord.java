@@ -4,6 +4,7 @@
 package com.example.bookmanagementsystem.jooq.public_.tables.records;
 
 
+import com.example.bookmanagementsystem.jooq.public_.enums.PublicationStatus;
 import com.example.bookmanagementsystem.jooq.public_.tables.Books;
 
 import java.util.UUID;
@@ -48,6 +49,34 @@ public class BooksRecord extends UpdatableRecordImpl<BooksRecord> {
         return (String) get(1);
     }
 
+    /**
+     * Setter for <code>public.books.price</code>.
+     */
+    public void setPrice(Integer value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.books.price</code>.
+     */
+    public Integer getPrice() {
+        return (Integer) get(2);
+    }
+
+    /**
+     * Setter for <code>public.books.publication_status</code>.
+     */
+    public void setPublicationStatus(PublicationStatus value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.books.publication_status</code>.
+     */
+    public PublicationStatus getPublicationStatus() {
+        return (PublicationStatus) get(3);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -71,11 +100,13 @@ public class BooksRecord extends UpdatableRecordImpl<BooksRecord> {
     /**
      * Create a detached, initialised BooksRecord
      */
-    public BooksRecord(UUID id, String title) {
+    public BooksRecord(UUID id, String title, Integer price, PublicationStatus publicationStatus) {
         super(Books.BOOKS);
 
         setId(id);
         setTitle(title);
+        setPrice(price);
+        setPublicationStatus(publicationStatus);
         resetChangedOnNotNull();
     }
 }

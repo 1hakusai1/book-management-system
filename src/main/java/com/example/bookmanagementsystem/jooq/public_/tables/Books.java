@@ -6,6 +6,7 @@ package com.example.bookmanagementsystem.jooq.public_.tables;
 
 import com.example.bookmanagementsystem.jooq.public_.Keys;
 import com.example.bookmanagementsystem.jooq.public_.Public;
+import com.example.bookmanagementsystem.jooq.public_.enums.PublicationStatus;
 import com.example.bookmanagementsystem.jooq.public_.tables.Authors.AuthorsPath;
 import com.example.bookmanagementsystem.jooq.public_.tables.AuthorsBooks.AuthorsBooksPath;
 import com.example.bookmanagementsystem.jooq.public_.tables.records.BooksRecord;
@@ -65,6 +66,16 @@ public class Books extends TableImpl<BooksRecord> {
      * The column <code>public.books.title</code>.
      */
     public final TableField<BooksRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.books.price</code>.
+     */
+    public final TableField<BooksRecord, Integer> PRICE = createField(DSL.name("price"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("999999"), SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.books.publication_status</code>.
+     */
+    public final TableField<BooksRecord, PublicationStatus> PUBLICATION_STATUS = createField(DSL.name("publication_status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field(DSL.raw("'unpublished'::publication_status"), SQLDataType.VARCHAR)).asEnumDataType(PublicationStatus.class), this, "");
 
     private Books(Name alias, Table<BooksRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

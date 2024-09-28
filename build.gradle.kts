@@ -57,7 +57,10 @@ jooq {
         generator {
             database {
                 name = "org.jooq.meta.postgres.PostgresDatabase"
-                includes = "authors|books|authors_books"
+                // TODO 新しいテーブルを作るたびにincludesを増やすのは面倒なのでexcludesで管理したいが、
+                // 想像以上に多くのテーブルが読み込まれ、excludesのルールをどのように設定すれば良いかわからなかったので、
+                // 現状はincludesで管理している
+                includes = "authors|books|authors_books|publication_status"
             }
             generate {}
             target {
