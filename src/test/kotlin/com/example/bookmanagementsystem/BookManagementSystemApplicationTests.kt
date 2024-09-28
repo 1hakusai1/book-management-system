@@ -1,6 +1,8 @@
 package com.example.bookmanagementsystem
 
 import com.example.bookmanagementsystem.author.Author
+import com.example.bookmanagementsystem.book.Book
+import com.example.bookmanagementsystem.book.PublicationStatus
 import org.flywaydb.core.Flyway
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -65,10 +67,54 @@ class BookManagementSystemApplicationTests(@Autowired val flyway: Flyway) {
 
         client.put().uri("/author/$authorId")
             .body(mapOf("name" to "Kent Beck", "birthday" to "1961-03-31"))
-            .retrieve().toEntity<Author>()
+            .retrieve()
         val updated = client.get().uri("/author/$authorId").retrieve().toEntity<Author>().body!!
         assertEquals(authorId, updated.id)
         assertEquals("Kent Beck", updated.name)
         assertEquals(LocalDate.of(1961, 3, 31), updated.birthday)
+    }
+
+    @Test
+    @DisplayName("書籍の登録、更新、取得ができる")
+    fun testBookCRUD() {
+        val createAuthorResponse = client.post().uri("/author")
+            .body(mapOf("name" to "Kent Beck", "birthday" to "1961-03-31"))
+            .retrieve().toEntity<Author>()
+        val authorId = createAuthorResponse.body!!.id
+        val createBookResponse = client.post().uri("/book")
+            .body(
+                mapOf(
+                    "title" to "Test Driven Development",
+                    "price" to 3080,
+                    "publicationStatus" to "UNPUBLISHED",
+                    "authorIds" to listOf(authorId)
+                )
+            )
+            .retrieve().toEntity<Book>()
+        val bookId = createBookResponse.body!!.id
+
+        val created = client.get().uri("/book/$bookId").retrieve().toEntity<Book>().body!!
+        assertEquals(bookId, created.id)
+        assertEquals("Test Driven Development", created.title)
+        assertEquals(3080, created.price)
+        assertEquals(PublicationStatus.UNPUBLISHED, created.publicationStatus)
+        assertEquals(listOf(authorId), created.authorIds)
+
+        client.put().uri("/book/$bookId")
+            .body(
+                mapOf(
+                    "title" to "Extreme Programming",
+                    "price" to 2420,
+                    "publicationStatus" to "PUBLISHED",
+                    "authorIds" to listOf(authorId)
+                )
+            )
+            .retrieve()
+        val updated = client.get().uri("/book/$bookId").retrieve().toEntity<Book>().body!!
+        assertEquals(bookId, updated.id)
+        assertEquals("Extreme Programming", updated.title)
+        assertEquals(2420, updated.price)
+        assertEquals(PublicationStatus.PUBLISHED, updated.publicationStatus)
+        assertEquals(listOf(authorId), updated.authorIds)
     }
 }
