@@ -18,9 +18,13 @@ class BookController(val bookRepository: BookRepository) {
     @PutMapping("/{id}")
     fun updateBook(@PathVariable("id") id: String, @RequestBody req: UpdateBookRequest): ResponseEntity<Book?> {
         val current = bookRepository.findById(id) ?: return ResponseEntity(null, HttpStatus.BAD_REQUEST)
-        val updated = current.copy(title = req.title, authorIds = req.authorIds)
-        bookRepository.save(updated)
-        return ResponseEntity(updated, HttpStatus.OK)
+        val updated = current.update(req.title, req.price, req.publicationStatus, req.authorIds)
+        updated.fold(onSuccess = {
+            bookRepository.save(it)
+            return ResponseEntity(it, HttpStatus.OK)
+        }, onFailure = {
+            return ResponseEntity(null, HttpStatus.BAD_REQUEST)
+        })
     }
 
     @GetMapping("")
@@ -29,9 +33,13 @@ class BookController(val bookRepository: BookRepository) {
     }
 
     @PostMapping("")
-    fun createNewBook(@RequestBody req: CreateBookRequest): Book {
+    fun createNewBook(@RequestBody req: CreateBookRequest): ResponseEntity<Book?> {
         val newBook = Book.from(req.title, req.price, req.publicationStatus, req.authorIds)
-        bookRepository.save(newBook)
-        return newBook
+        newBook.fold(onSuccess = {
+            bookRepository.save(it)
+            return ResponseEntity(it, HttpStatus.OK)
+        }, onFailure = {
+            return ResponseEntity(null, HttpStatus.BAD_REQUEST)
+        })
     }
 }
